@@ -1,0 +1,24 @@
+Revision history for Perl extension SVG::Calendar
+
+0.1.2
+	Fixed missing version required module in Meta.yml
+
+0.1.1
+	- Added year display to calendar
+
+0.1.0
+	- Fixed not showing images
+	- Changed the full moon to black (unless it is the second in a month)
+	- Fixed scaling of images.
+	- Added missing params to svgcal.pl
+	- Changed Test::Kwalitee to run if possible
+
+0.0.6 Sat June 7 20:17:00 2008
+	- Added missing required module Readonly to list of required modules.
+
+0.0.5 Thu June 5 11:21:00 2008
+	- Some documentation updates
+	- Fixes for perlcritic and kwalitee
+
+0.01  Fri May  30 14:11:54 2008
+	- original version
