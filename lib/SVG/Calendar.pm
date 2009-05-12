@@ -761,7 +761,7 @@ Ivan Wills - (ivan.wills@gmail.com)
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2006 Ivan Wills (101 Miles St Bald Hills QLD Australia 4036).
+Copyright (c) 2006-2009 Ivan Wills (14 Mullion Close, Hornsby Heights, NSW Australia 2077)
 All rights reserved.
 
 
