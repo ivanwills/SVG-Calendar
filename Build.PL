@@ -1,14 +1,13 @@
-
 use strict;
 use warnings;
 use Module::Build;
 
-my $build = Module::Build->new(
-	module_name => 'SVG::Calendar',
-	license  => 'perl',
-	dist_author         => 'Ivan Wills <ivan.wills@gmail.com>',
-    dist_version_from   => 'lib/SVG/Calendar.pm',
-	requires => {
+my $builder = Module::Build->new(
+	module_name       => 'SVG::Calendar',
+	license           => 'perl',
+	dist_author       => 'Ivan Wills <ivan.wills@gmail.com>',
+	dist_version_from => 'lib/SVG/Calendar.pm',
+	requires          => {
 		'perl'                         => 5.008,
 		'SVG'                          => '2.33',
 		'Math::Trig'                   => '1.15',
@@ -28,7 +27,15 @@ my $build = Module::Build->new(
 		'Test::Kwalitee'      => 0,
 		'Test::Critic'        => 0,
 	},
-	add_to_cleanup      => [ 'SVG-Calendar-*' ],
+	add_to_cleanup     => [ 'SVG-Calendar-*' ],
 	create_makefile_pl => 'traditional',
+	create_license     => 1,
+	meta_merge => {
+		resources => {
+			repository => 'git://github.com/ivanwills/SVG-Calendar.git',
+			bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=SVG-Calendar',
+		},
+	},
 );
-$build->create_build_script;
+
+$builder->create_build_script();
