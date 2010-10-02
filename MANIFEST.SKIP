@@ -62,3 +62,6 @@ Debian_CPANTS.txt
 # Avoid archives of this distribution
 \bSVG-Calendar-[\d\.\_]+
 vim.sh
+.vimtagsdisplay
+tags
+

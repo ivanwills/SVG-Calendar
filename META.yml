@@ -1,14 +1,28 @@
 ---
-name: SVG-Calendar
-version: 0.1.2
+abstract: 'Creates calendars in SVG format which can be printed'
 author:
   - 'Ivan Wills <ivan.wills@gmail.com>'
-abstract: Creates calendars in SVG format which can be printed
+build_requires:
+  Test::Critic: 0
+  Test::Kwalitee: 0
+  Test::More: 0
+  Test::Pod: 0
+  Test::Pod::Coverage: 0
+  Test::Spelling: 0
+configure_requires:
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3607'
 license: perl
-resources:
-  license: http://dev.perl.org/licenses/
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: SVG-Calendar
+provides:
+  SVG::Calendar:
+    file: lib/SVG/Calendar.pm
+    version: v0.2.0
 requires:
-  Class::Date: 1.1.7
+  Class::Date: 1.1
   Clone: 0.17
   Image::ExifTool: 7.0
   Math::Trig: 1.15
@@ -16,15 +30,10 @@ requires:
   SVG: 2.33
   Template: 2.14
   Template::Provider::FromDATA: 0.08
-  perl: 5.8
+  perl: 5.008
   version: 0.74
-build_requires:
-  Test::More: 0
-provides:
-  SVG::Calendar:
-    file: lib/SVG/Calendar.pm
-    version: 0.1.2
-generated_by: Module::Build version 0.2808
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+resources:
+  bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=SVG-Calendar
+  license: http://dev.perl.org/licenses/
+  repository: http://github.com/ivanwills/SVG-Calendar
+version: v0.2.0

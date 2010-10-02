@@ -25,14 +25,14 @@ my $builder = Module::Build->new(
 		'Test::Pod::Coverage' => 0,
 		'Test::Spelling'      => 0,
 		'Test::Kwalitee'      => 0,
-		'Test::Critic'        => 0,
+		'Test::Perl::Critic'  => 0,
 	},
 	add_to_cleanup     => [ 'SVG-Calendar-*' ],
 	create_makefile_pl => 'traditional',
 	create_license     => 1,
-	meta_merge => {
+	meta_merge         => {
 		resources => {
-			repository => 'git://github.com/ivanwills/SVG-Calendar.git',
+			repository => 'http://github.com/ivanwills/SVG-Calendar',
 			bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=SVG-Calendar',
 		},
 	},
