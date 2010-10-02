@@ -23,7 +23,7 @@ use Image::ExifTool qw/ImageInfo/;
 use English '-no_match_vars';
 use base qw/Exporter/;
 
-our $VERSION   = version->new('0.1.2');
+our $VERSION   = version->new('0.1.3');
 our @EXPORT_OK = qw//;
 
 Readonly my $MARGIN_RATIO             => 0.04;
