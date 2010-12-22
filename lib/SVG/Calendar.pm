@@ -55,499 +55,504 @@ Readonly my $ONE_WEEK                 => 7;
 
 sub new {
 
-	my ( $class, %param ) = @_;
-	my $self = clone \%param;
+    my ( $class, %param ) = @_;
+    my $self = clone \%param;
 
-	bless $self, $class;
+    bless $self, $class;
 
-	$self->init();
+    $self->init();
 
-	return $self;
+    return $self;
 }
 
 sub init {
-	my $self    = shift;
-	my %size    = $self->get_page();
-	my %temp    = ( page => \%size, xu => $self->{page}{width_unit}, yu => $self->{page}{height_unit}, );
-	my $svg     = SVG->new( -raiseerror => 1, %size, );
-	my $height  = $self->{page}{height};
-	my $width   = $self->{page}{width};
-	my $xu      = $self->{page}{width_unit};
-	my $yu      = $self->{page}{height_unit};
-	my $xmargin = $self->{page}{margin} || $self->{page}{width} * $MARGIN_RATIO;
-	my $ymargin = $self->{page}{margin} || $self->{page}{height} * $MARGIN_RATIO;
-	$self->{svg}               = $svg;
-	$self->{page}{x_margin}    = $xmargin;
-	$self->{page}{y_margin}    = $ymargin;
-	$self->{moon}{xoffset}   ||= 0;
-	$self->{moon}{yoffset}   ||= 0;
-	$self->{calendar_height} ||= '0.5';
-	$self->{calendar_height}  =~ s/%//exms;
-	if ( $self->{calendar_height} > 1 ) {
-		# assume that the height is a percentage value and divide by 100
-		$self->{calendar_height} /= 100;
-	}
+    my $self    = shift;
+    my %size    = $self->get_page();
+    my %temp    = ( page => \%size, xu => $self->{page}{width_unit}, yu => $self->{page}{height_unit}, );
+    my $svg     = SVG->new( -raiseerror => 1, %size, );
+    my $height  = $self->{page}{height};
+    my $width   = $self->{page}{width};
+    my $xu      = $self->{page}{width_unit};
+    my $yu      = $self->{page}{height_unit};
+    my $xmargin = $self->{page}{margin} || $self->{page}{width} * $MARGIN_RATIO;
+    my $ymargin = $self->{page}{margin} || $self->{page}{height} * $MARGIN_RATIO;
+    $self->{svg}               = $svg;
+    $self->{page}{x_margin}    = $xmargin;
+    $self->{page}{y_margin}    = $ymargin;
+    $self->{moon}{xoffset}   ||= 0;
+    $self->{moon}{yoffset}   ||= 0;
+    $self->{calendar_height} ||= '0.5';
+    $self->{calendar_height}  =~ s/%//exms;
+    if ( $self->{calendar_height} > 1 ) {
+        # assume that the height is a percentage value and divide by 100
+        $self->{calendar_height} /= 100;
+    }
 
-	# cal bounding box (bb)
-	$temp{bb} = {
-		x      => $xmargin,
-		y      => ( $height * ( 1 - $self->{calendar_height} ) + $ymargin ),
-		height => ( $height * $self->{calendar_height} - $ymargin * 2 ),
-		width  => ( $width - $xmargin * 2 ),
-	};
+    # cal bounding box (bb)
+    $temp{bb} = {
+        x      => $xmargin,
+        y      => ( $height * ( 1 - $self->{calendar_height} ) + $ymargin ),
+        height => ( $height * $self->{calendar_height} - $ymargin * 2 ),
+        width  => ( $width - $xmargin * 2 ),
+    };
 
-	my $rows              = $MAX_WEEK_ROW + 1;
-	my $row_height        = $temp{bb}{height} / ( $rows + $ROUNDING_FACTOR ) * ( 0.5 + $self->{calendar_height} );
-	my $row_margin_height = $row_height / ( $rows * 2 );
-	my $cols              = $DAY_COLS;
-	my $col_width         = $temp{bb}{width} / ( $cols + $ROUNDING_FACTOR );
-	my $col_margin_width  = $col_width / ( $cols * 2 );
+    my $rows              = $MAX_WEEK_ROW + 1;
+    my $row_height        = $temp{bb}{height} / ( $rows + $ROUNDING_FACTOR ) * ( 0.5 + $self->{calendar_height} );
+    my $row_margin_height = $row_height / ( $rows * 2 );
+    my $cols              = $DAY_COLS;
+    my $col_width         = $temp{bb}{width} / ( $cols + $ROUNDING_FACTOR );
+    my $col_margin_width  = $col_width / ( $cols * 2 );
 
-	# setup the day boxes row by row
-	for my $i ( 2 .. $rows ) {
-		my $row_y = $temp{bb}{y} + $row_margin_height * ( 2 * $i - 1 ) + $row_height * ( $i - 1 );
+    # setup the day boxes row by row
+    for my $i ( 2 .. $rows ) {
+        my $row_y = $temp{bb}{y} + $row_margin_height * ( 2 * $i - 1 ) + $row_height * ( $i - 1 );
 
-		# setup the individual days
-		for my $j ( 2 .. $cols ) {
-			my $x = ( $temp{bb}{x} + $col_margin_width * ( 2 * $j - 1 ) + $col_width * ( $j - 1 ) ) - $col_width / 2;
-			my $y = $row_y - $row_height / 2;
-			$temp{cal}[ $i - 1 ][ $j - 1 ] = {
-				x      => $x,
-				y      => $y,
-				height => $row_height,
-				width  => $col_width,
-				text   => {
-					x      => $x + $col_margin_width * $TEXT_OFFSET_X,
-					y      => $y + $row_height * $TEXT_OFFSET_X,
-					length => $col_width * $TEXT_WIDTH_RATIO,
-					class  => 'mday ',
-					style  => 'font-size: ' . ( $row_height * $TEXT_HEIGHT_RATIO ),
-				},
-			};
-		}
-	}
+        # setup the individual days
+        for my $j ( 2 .. $cols ) {
+            my $x = ( $temp{bb}{x} + $col_margin_width * ( 2 * $j - 1 ) + $col_width * ( $j - 1 ) ) - $col_width / 2;
+            my $y = $row_y - $row_height / 2;
+            $temp{cal}[ $i - 1 ][ $j - 1 ] = {
+                x      => $x,
+                y      => $y,
+                height => $row_height,
+                width  => $col_width,
+                text   => {
+                    x      => $x + $col_margin_width * $TEXT_OFFSET_X,
+                    y      => $y + $row_height * $TEXT_OFFSET_X,
+                    length => $col_width * $TEXT_WIDTH_RATIO,
+                    class  => 'mday ',
+                    style  => 'font-size: ' . ( $row_height * $TEXT_HEIGHT_RATIO ),
+                },
+            };
+        }
+    }
 
-	# set up the week day headings
-	my $count = 1;
-	for my $day (qw/Mon Tue Wed Thu Fri Sat Sun/) {
-		my $x = $temp{bb}{x} + $col_margin_width * ( 2 * $count + 1 ) + $col_width * ( $count - 1 ) + $col_width / 2;
-		my $y = $temp{bb}{y} + $row_margin_height;
-		$temp{cal}[0][$count] = {
-			x      => $x,
-			y      => $y,
-			height => $row_height * $self->{calendar_height},
-			width  => $col_width,
-			text   => {
-				text   => $day,
-				x      => $x + $col_width / $HEADING_DOW_WIDTH_SCALE,
-				y      => $y + $row_height * $HEADING_DOW_HEIGHT_SCALE,
-				length => $col_width * $HEADING_WIDTH_SCALE,
-				adjust => 'spacing',                                #AndGlyphs',
-				class  => 'day ' . lc $day,
-				style  => 'font-size: ' . ( $row_height * $HEADING_HEIGHT_SCALE ),
-			},
-		};
-		$count++;
-	}
+    # set up the week day headings
+    my $count = 1;
+    for my $day (qw/Mon Tue Wed Thu Fri Sat Sun/) {
+        my $x = $temp{bb}{x} + $col_margin_width * ( 2 * $count + 1 ) + $col_width * ( $count - 1 ) + $col_width / 2;
+        my $y = $temp{bb}{y} + $row_margin_height;
+        $temp{cal}[0][$count] = {
+            x      => $x,
+            y      => $y,
+            height => $row_height * $self->{calendar_height},
+            width  => $col_width,
+            text   => {
+                text   => $day,
+                x      => $x + $col_width / $HEADING_DOW_WIDTH_SCALE,
+                y      => $y + $row_height * $HEADING_DOW_HEIGHT_SCALE,
+                length => $col_width * $HEADING_WIDTH_SCALE,
+                adjust => 'spacing',                                #AndGlyphs',
+                class  => 'day ' . lc $day,
+                style  => 'font-size: ' . ( $row_height * $HEADING_HEIGHT_SCALE ),
+            },
+        };
+        $count++;
+    }
 
-	# set up the week of the year column
-	$count = 1;
-	for my $week ( 1 .. $MAX_WEEK_ROW ) {
-		my $x = $temp{bb}{x} + $col_margin_width;
-		my $y = $temp{bb}{y} + $row_margin_height * ( 2 * $count + 1 ) + $row_height * ( $count - 1 ) + $row_height / 2;
-		$temp{cal}[$count][0] = {
-			x      => $x,
-			y      => $y,
-			height => $row_height,
-			width  => $col_width / 2,
-			text   => {
-				text   => $week,
-				x      => $x + $col_width / $HEADING_WOY_WIDTH_SCALE,
-				y      => $y + $row_height * $HEADING_WOY_HEIGHT_SCALE,
-				length => $col_width * $HEADING_WIDTH_SCALE,
-				adjust => 'spacing',                                #AndGlyphs',
-				class  => 'week',
-				style  => 'font-size: ' . ( $row_height * $HEADING_HEIGHT_SCALE ),
-			},
-		};
-		$count++;
-	}
+    # set up the week of the year column
+    $count = 1;
+    for my $week ( 1 .. $MAX_WEEK_ROW ) {
+        my $x = $temp{bb}{x} + $col_margin_width;
+        my $y = $temp{bb}{y} + $row_margin_height * ( 2 * $count + 1 ) + $row_height * ( $count - 1 ) + $row_height / 2;
+        $temp{cal}[$count][0] = {
+            x      => $x,
+            y      => $y,
+            height => $row_height,
+            width  => $col_width / 2,
+            text   => {
+                text   => $week,
+                x      => $x + $col_width / $HEADING_WOY_WIDTH_SCALE,
+                y      => $y + $row_height * $HEADING_WOY_HEIGHT_SCALE,
+                length => $col_width * $HEADING_WIDTH_SCALE,
+                adjust => 'spacing',                                #AndGlyphs',
+                class  => 'week',
+                style  => 'font-size: ' . ( $row_height * $HEADING_HEIGHT_SCALE ),
+            },
+        };
+        $count++;
+    }
 
-	# get the month display stuff
-	$temp{month} = {
-		x     => $temp{bb}{x} + $col_margin_width * 2,
-		y     => $temp{bb}{y} - $ymargin/2,
-		style => 'font-size: ' . ($row_height),
-	};
+    # get the month display stuff
+    $temp{month} = {
+        x     => $temp{bb}{x} + $col_margin_width * 2,
+        y     => $temp{bb}{y} - $ymargin/2,
+        style => 'font-size: ' . ($row_height),
+    };
 
-	# set up the year display
-	$temp{year} = {
-		x     => $temp{bb}{x} + $temp{bb}{width},
-		y     => $temp{bb}{y} - $ymargin/2,
-		style => 'text-align: end; text-anchor: end; font-size: ' . $row_height,
-	};
+    # set up the year display
+    $temp{year} = {
+        x     => $temp{bb}{x} + $temp{bb}{width},
+        y     => $temp{bb}{y} - $ymargin/2,
+        style => 'text-align: end; text-anchor: end; font-size: ' . $row_height,
+    };
 
-	$self->{template} = \%temp;
+    $self->{template} = \%temp;
 
-	return;
+    return;
 }
 
 sub get_page {
 
-	my $self = shift;
-	my $page = ref $self->{page} ? $self->{page}{page} : $self->{page};
-	my %size = ( width => '210.00mm', height => '297.00mm' );
+    my $self = shift;
+    my $page = ref $self->{page} ? $self->{page}{page} : $self->{page};
+    my %size = ( width => '210.00mm', height => '297.00mm' );
 
-	if ($page) {
-		%size =
-			  $page eq 'A0' ? ( width => '840.00mm', height => '1188.00mm' )
-			: $page eq 'A1' ? ( width => '594.00mm', height => '840.00mm' )
-			: $page eq 'A2' ? ( width => '420.00mm', height => '594.00mm' )
-			: $page eq 'A3' ? ( width => '297.00mm', height => '420.00mm' )
-			: $page eq 'A4' ? ( width => '210.00mm', height => '297.00mm' )
-			: $page eq 'A5' ? ( width => '148.50mm', height => '210.00mm' )
-			: $page eq 'A6' ? ( width => '105.00mm', height => '148.50mm' )
-			:                 croak "Unknown page type '$page'!\n";
-	}
+    if ($page) {
+        %size =
+              $page eq 'A0' ? ( width => '840.00mm', height => '1188.00mm' )
+            : $page eq 'A1' ? ( width => '594.00mm', height => '840.00mm' )
+            : $page eq 'A2' ? ( width => '420.00mm', height => '594.00mm' )
+            : $page eq 'A3' ? ( width => '297.00mm', height => '420.00mm' )
+            : $page eq 'A4' ? ( width => '210.00mm', height => '297.00mm' )
+            : $page eq 'A5' ? ( width => '148.50mm', height => '210.00mm' )
+            : $page eq 'A6' ? ( width => '105.00mm', height => '148.50mm' )
+            :                 croak "Unknown page type '$page'!\n";
+    }
 
-	if ( ref $self->{page} && $self->{page}{width} ) {
-		$size{width} = $self->{page}{width};
-	}
-	if ( ref $self->{page} && $self->{page}{height} ) {
-		$size{height} = $self->{page}{height};
-	}
+    if ( ref $self->{page} && $self->{page}{width} ) {
+        $size{width} = $self->{page}{width};
+    }
+    if ( ref $self->{page} && $self->{page}{height} ) {
+        $size{height} = $self->{page}{height};
+    }
 
-	# Get the values to internal variables
-	my ( $width, $width_unit ) = $size{width} =~ /\A(.+?)(px|pt|mm|cm|m|in)?\Z/xms;
-	$width *= 1.0;
-	croak "Unable to get a width from $self->{page} or $self->{width}" if !$width;
-	$width_unit ||= 'px';
+    # Get the values to internal variables
+    my ( $width, $width_unit ) = $size{width} =~ /\A(.+?)(px|pt|mm|cm|m|in)?\Z/xms;
+    $width *= 1.0;
+    croak "Unable to get a width from $self->{page} or $self->{width}" if !$width;
+    $width_unit ||= 'px';
 
-	my ( $height, $height_unit ) = $size{height} =~ /\A(.+?)(px|pt|mm|cm|m|in)?\Z/xms;
-	$height *= 1.0;
-	croak "Unable to get a height from $self->{page} or $self->{height}" if !$height;
-	$height_unit ||= 'px';
+    my ( $height, $height_unit ) = $size{height} =~ /\A(.+?)(px|pt|mm|cm|m|in)?\Z/xms;
+    $height *= 1.0;
+    croak "Unable to get a height from $self->{page} or $self->{height}" if !$height;
+    $height_unit ||= 'px';
 
-	# store the internal variables
-	if ( !ref $self->{page} ) {
-		$self->{page} = {};
-	}
-	$self->{page}{width}       = $width;
-	$self->{page}{width_unit}  = $width_unit;
-	$self->{page}{height}      = $height;
-	$self->{page}{height_unit} = $height_unit;
+    # store the internal variables
+    if ( !ref $self->{page} ) {
+        $self->{page} = {};
+    }
+    $self->{page}{width}       = $width;
+    $self->{page}{width_unit}  = $width_unit;
+    $self->{page}{height}      = $height;
+    $self->{page}{height_unit} = $height_unit;
 
-	return (
-		width       => $width,
-		width_unit  => $width_unit,
-		height      => $height,
-		height_unit => $height_unit,
-	);
+    return (
+        width       => $width,
+        width_unit  => $width_unit,
+        height      => $height,
+        height_unit => $height_unit,
+    );
 }
 
 sub output_year {
 
-	my ( $self, @params ) = @_;
-	my $file = pop @params;
-	my ( $start, $end ) = @params;
+    my ( $self, @params ) = @_;
+    my $file = pop @params;
+    my ( $start, $end ) = @params;
 
-	if ($end) {
-		$start = Class::Date->new("$start-01");
-		$end   = Class::Date->new("$end-01");
-	}
-	else {
-		$start = Class::Date->new("$start-01-01");
-		$end   = $start + $INTERVAL_ELEVEN_MONTHS;
-	}
+    if ($end) {
+        $start = Class::Date->new("$start-01");
+        $end   = Class::Date->new("$end-01");
+    }
+    else {
+        $start = Class::Date->new("$start-01-01");
+        $end   = $start + $INTERVAL_ELEVEN_MONTHS;
+    }
 
-	my @files;
-	while ( $start <= $end ) {
-		my $month = $start->strftime('%Y-%m');
-		push @files, "$file-$month.svg";
-		$self->output_month( $month, "$file-$month.svg" );
-		$start += $INTERVAL_ONE_MONTH;
-	}
+    my @files;
+    while ( $start <= $end ) {
+        my $month = $start->strftime('%Y-%m');
+        push @files, "$file-$month.svg";
+        $self->output_month( $month, "$file-$month.svg" );
+        $start += $INTERVAL_ONE_MONTH;
+    }
 
-	return @files;
+    return @files;
 }
 
 sub output_month {
 
-	my ( $self, $month, $file, ) = @_;
+    my ( $self, $month, $file, ) = @_;
 
-	# add the month specific details to a clone of the general settings
-	my $templ = clone $self->{template};
-	my %size  = $self->get_page();
-	my $svg   = SVG->new( -raiseerror => 1, %size, );
-	$self->{svg}       = $svg;
-	$self->{full_moon} = 0;
+    # add the month specific details to a clone of the general settings
+    my $templ = clone $self->{template};
+    my %size  = $self->get_page();
+    my $svg   = SVG->new( -raiseerror => 1, %size, );
+    $self->{svg}       = $svg;
+    $self->{full_moon} = 0;
 
-	carp "Month '$month' is not the correct format (YYYY-MM) " if !$month || $month !~ /\A\d{4}-\d{2}\Z/xms;
+    carp "Month '$month' is not the correct format (YYYY-MM) " if !$month || $month !~ /\A\d{4}-\d{2}\Z/xms;
 
-	my $date = Class::Date->new("$month-01");
-	$templ->{year}{text}  = $date->year();
-	$templ->{month}{text} = $date->monthname();
-	my $month_day = $date - $INTERVAL_ONE_WEEK;
-	my $row       = 1;
-	my $wrap      = 0;
+    my $date = Class::Date->new("$month-01");
+    $templ->{year}{text}  = $date->year();
+    $templ->{month}{text} = $date->monthname();
+    my $month_day = $date - $INTERVAL_ONE_WEEK;
+    my $row       = 1;
+    my $wrap      = 0;
 
-	# make sure that we start on a monday
-	while ( $month_day->wday() != 2 ) {
-		$month_day += $INTERVAL_ONE_DAY;
-	}
+    # make sure that we start on a monday
+    while ( $month_day->wday() != 2 ) {
+        $month_day += $INTERVAL_ONE_DAY;
+    }
 
-	DAY:
-	for my $count ( 1 .. $MAX_DAYS ) {
+    DAY:
+    for my $count ( 1 .. $MAX_DAYS ) {
 
-		# get the day of the week (of the first day of the month)
-		my $wday = $month_day->wday();
-		$wday = $wday == 1 ? $ONE_WEEK : $wday - 1;
-		my $r = $templ->{cal}[$row][$wday]{width} / $DAY_COLS;
+        # get the day of the week (of the first day of the month)
+        my $wday = $month_day->wday();
+        $wday = $wday == 1 ? $ONE_WEEK : $wday - 1;
+        my $r = $templ->{cal}[$row][$wday]{width} / $DAY_COLS;
 
-		$templ->{cal}[$row][$wday]{text}{text} = $month_day->mday();
-		$templ->{cal}[$row][$wday]{current} = $date->month() == $month_day->month() ? 1 : 2;
-		if ( $date->month() == $month_day->month() ) {
-			$templ->{cal}[$row][$wday]{text}{class} .= 'current_month';
-		}
+        $templ->{cal}[$row][$wday]{text}{text} = $month_day->mday();
+        $templ->{cal}[$row][$wday]{current} = $date->month() == $month_day->month() ? 1 : 2;
+        if ( $date->month() == $month_day->month() ) {
+            $templ->{cal}[$row][$wday]{text}{class} .= 'current_month';
+        }
 
-		if ( $self->{moon} && $self->{moon}{display} ) {
+        if ( $self->{moon} && $self->{moon}{display} ) {
 
-			# get the phase info at 8:00pm
-			my $moon_date = $month_day + $MOON_AT_NIGHT;
-			my $phase     = $self->get_moon_phase($moon_date);
-			$templ->{cal}[$row][$wday]{moon} = $self->moon(
-				phase => $phase,
-				id    => 'moon_' . $month_day->strftime('%Y-%m-%d'),
-				x     => $templ->{cal}[$row][$wday]{x} + $r + $templ->{cal}[$row][$wday]{width} * $MOON_SCALE_WIDTH   + $self->{moon}{xoffset},
-				y     => $templ->{cal}[$row][$wday]{y} - $r + $templ->{cal}[$row][$wday]{height} * $MOON_SCALE_HEIGHT + $self->{moon}{yoffset},
-				r     => $r,
-			);
-		}
+            # get the phase info at 8:00pm
+            my $moon_date = $month_day + $MOON_AT_NIGHT;
+            my $phase     = $self->get_moon_phase($moon_date);
+            $templ->{cal}[$row][$wday]{moon} = $self->moon(
+                phase => $phase,
+                id    => 'moon_' . $month_day->strftime('%Y-%m-%d'),
+                x     => $templ->{cal}[$row][$wday]{x} + $r + $templ->{cal}[$row][$wday]{width} * $MOON_SCALE_WIDTH   + $self->{moon}{xoffset},
+                y     => $templ->{cal}[$row][$wday]{y} - $r + $templ->{cal}[$row][$wday]{height} * $MOON_SCALE_HEIGHT + $self->{moon}{yoffset},
+                r     => $r,
+            );
+        }
 
-		if ( $wday == $ONE_WEEK ) {
-			$row++;
-		}
-		if ( $row > $MAX_WEEK_ROW ) {
-			$row  = 1;
-			$wrap = 1;
-		}
-		$month_day += $INTERVAL_ONE_DAY;
+        if ( $wday == $ONE_WEEK ) {
+            $row++;
+        }
+        if ( $row > $MAX_WEEK_ROW ) {
+            $row  = 1;
+            $wrap = 1;
+        }
+        $month_day += $INTERVAL_ONE_DAY;
 
-		# stop if we leave the current month.
-		last DAY if $wrap && $date->month() != $month_day->month();
-	}
+        # stop if we leave the current month.
+        last DAY if $wrap && $date->month() != $month_day->month();
+    }
 
-	# process the image if present
-	if ( $self->{image} && ( $self->{image}{src} || $self->{image}{$month} ) ) {
-		my $image = $self->{image}{$month} || $self->{image}{src};
-		$templ->{image}{src} = $image;
+    # process the image if present
+    if ( $self->{image} && ( $self->{image}{src} || $self->{image}{$month} ) ) {
+        my $image = $self->{image}{$month} || $self->{image}{src};
+        $templ->{image}{src} = $image;
 
-		$templ->{image}{x} = $self->{page}{x_margin};
-		$templ->{image}{y} = $self->{page}{y_margin};
+        $templ->{image}{x} = $self->{page}{x_margin};
+        $templ->{image}{y} = $self->{page}{y_margin};
 
-		if ( -f $image ) {
-			my $info = ImageInfo($image);
-			if ( $info->{ImageHeight} && $info->{ImageWidth} ) {
-				$templ->{image}{x}      = $self->{page}{x_margin};
-				$templ->{image}{y}      = $self->{page}{y_margin};
-				$templ->{image}{width}  = $self->{page}{width}  - 2 * $self->{page}{x_margin};
-				$templ->{image}{height} = $self->{page}{height} * (1 - $self->{calendar_height}) - $self->{page}{y_margin} * 2;
+        if ( -f $image ) {
+            my $info = ImageInfo($image);
+            if ( $info->{ImageHeight} && $info->{ImageWidth} ) {
+                $templ->{image}{x}      = $self->{page}{x_margin};
+                $templ->{image}{y}      = $self->{page}{y_margin};
+                $templ->{image}{width}  = $self->{page}{width}  - 2 * $self->{page}{x_margin};
+                $templ->{image}{height} = $self->{page}{height} * (1 - $self->{calendar_height}) - $self->{page}{y_margin} * 2;
 
-				my $image_scale = $info->{ImageHeight}    / $info->{ImageWidth};
-				my $page_scale  = $templ->{image}{height} / $templ->{image}{width};
+                my $image_scale = $info->{ImageHeight}    / $info->{ImageWidth};
+                my $page_scale  = $templ->{image}{height} / $templ->{image}{width};
 
-				if ($image_scale < $page_scale) {
-					$templ->{image}{y}      -= ( $templ->{image}{height} - ( $templ->{image}{height} * $page_scale / $image_scale ) ) / 2;
-					$templ->{image}{height} *= $image_scale / $page_scale;
-				}
-				else {
-					$templ->{image}{x}     += ( $templ->{image}{width} - ( $templ->{image}{width} * $page_scale / $image_scale ) ) / 2;
-					$templ->{image}{width} *= $page_scale / $image_scale;
-				}
-			}
-		}
-	}
+                if ($image_scale < $page_scale) {
+                    $templ->{image}{y}      -= ( $templ->{image}{height} - ( $templ->{image}{height} * $page_scale / $image_scale ) ) / 2;
+                    $templ->{image}{height} *= $image_scale / $page_scale;
+                }
+                else {
+                    $templ->{image}{x}     += ( $templ->{image}{width} - ( $templ->{image}{width} * $page_scale / $image_scale ) ) / 2;
+                    $templ->{image}{width} *= $page_scale / $image_scale;
+                }
+            }
+            else {
+                die "The image $image doesn't apear to have a height or width\n";
+            }
+        }
+    }
 
-	return $self->output( $file, $templ );
+    return $self->output( $file, $templ );
 }
 
 sub output {
 
-	my ( $self, $file, $template ) = @_;
+    my ( $self, $file, $template ) = @_;
 
-	my $fh;
-	my %option = ( EVAL_PERL => 1 );
-	if ( $self->{path} ) {
-		$option{INCLUDE_PATH} = $self->{path};
-	}
-	else {
-		my $provider = Template::Provider::FromDATA->new( { CLASSES => __PACKAGE__ } );
-		$option{LOAD_TEMPLATES} = [$provider];
-	}
+    my $fh;
+    my %option = ( EVAL_PERL => 1 );
+    if ( $self->{path} ) {
+        $option{INCLUDE_PATH} = $self->{path};
+    }
+    else {
+        my $provider = Template::Provider::FromDATA->new( { CLASSES => __PACKAGE__ } );
+        $option{LOAD_TEMPLATES} = [$provider];
+    }
 
-	my $tmpl = $self->{tt} || Template->new(%option);
+    my $tmpl = $self->{tt} || Template->new(%option);
 
-	my $text;
-	$tmpl->process( 'calendar.svg', $template, \$text )
-		or croak( $tmpl->error );
+    my $text;
+    print Dumper($template) if $self->{verbose};
 
-	if ($file) {
-		if ( $file eq q/-/ ) {
-			print $text or carp "Could not write to STDOUT: $OS_ERROR\n";
-		}
-		else {
-			open $fh, q/>/, $file or croak "Cannot write SVG to file '$file': $!\n";
+    $tmpl->process( 'calendar.svg', $template, \$text )
+        or croak( $tmpl->error );
 
-			print {$fh} $text or carp "Could not write to file '$file': $OS_ERROR\n";
+    if ($file) {
+        if ( $file eq q/-/ ) {
+            print $text or carp "Could not write to STDOUT: $OS_ERROR\n";
+        }
+        else {
+            open $fh, q/>/, $file or croak "Cannot write SVG to file '$file': $!\n";
 
-			close $fh or carp "There was an issue closing file '$file': $OS_ERROR\n";
-		}
-	}
+            print {$fh} $text or carp "Could not write to file '$file': $OS_ERROR\n";
 
-	$self->{tt} = $tmpl;
-	return $text;
+            close $fh or carp "There was an issue closing file '$file': $OS_ERROR\n";
+        }
+    }
+
+    $self->{tt} = $tmpl;
+    return $text;
 }
 
 sub moon {
 
-	my ( $self, %params ) = @_;
+    my ( $self, %params ) = @_;
 
-	my $phase  = $params{phase};
-	my $id     = $params{id};
-	my $x      = $params{x} || $FULL_MOON;
-	my $y      = $params{y} || $FULL_MOON;
-	my $r      = $params{r} || $FULL_MOON;
-	my $svg    = $self->{svg};
-	my $style  = q//;
+    my $phase  = $params{phase};
+    my $id     = $params{id};
+    my $x      = $params{x} || $FULL_MOON;
+    my $y      = $params{y} || $FULL_MOON;
+    my $r      = $params{r} || $FULL_MOON;
+    my $svg    = $self->{svg};
+    my $style  = q//;
 
-	# approx error of less than one lunar day
-	my $error = 2 * pi / 56;  ## no critic
+    # approx error of less than one lunar day
+    my $error = 2 * pi / 56;  ## no critic
 
-	# extra testing
-	my $g = $svg->g( id => "extra_$id", class => 'moon', );
+    # extra testing
+    my $g = $svg->g( id => "extra_$id", class => 'moon', );
 
-	# moon phases 0 == new moon 3 == last quarter
+    # moon phases 0 == new moon 3 == last quarter
 
-	my ( $sx, $sy ) = ( $x, $y );
-	my ( $ex, $ey ) = ( $x, $y + 2 * $r );
+    my ( $sx, $sy ) = ( $x, $y );
+    my ( $ex, $ey ) = ( $x, $y + 2 * $r );
 
-	if ( $phase < $error || 2 * pi - $error < $phase ) {
+    if ( $phase < $error || 2 * pi - $error < $phase ) {
 
-		# New moon
-		$style = 'stroke: red';
-	}
-	elsif ( pi - $error < $phase && $phase < pi + $error ) {
+        # New moon
+        $style = 'stroke: grey';
+    }
+    elsif ( pi - $error < $phase && $phase < pi + $error ) {
 
-		# approx full moon
-		my $colour = $self->{full_moon}++ ? 'blue' : 'black';
-		$g->circle(
-			id    => $id,
-			style => "fill: $colour; stroke: none",
-			cx    => $x,
-			cy    => ( $sy + $ey ) / 2,
-			r     => $r,
-		);
-	}
-	elsif ( $phase < pi ) {
+        # approx full moon
+        my $colour = $self->{full_moon}++ ? 'blue' : 'black';
+        $g->circle(
+            id    => $id,
+            style => "fill: $colour; stroke: none",
+            cx    => $x,
+            cy    => ( $sy + $ey ) / 2,
+            r     => $r,
+        );
+    }
+    elsif ( $phase < pi ) {
 
-		# moon waxing partial
-		my $d = "M $sx\t$sy C ";
-		$d .= ( $sx + $r * $MOON_RADIAL_STEP ) . q/ / . $sy . q/,/;
-		$d .= ( $sx + $r * $MOON_RADIAL_STEP ) . q/ / . $ey;
-		$d .= ",$ex\t$ey C ";
-		$d .= ( $ex - $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $ey + $r / 2 * ( -sin($phase) ) ) . q/,/;
-		$d .= ( $ex - $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $sy - $r / 2 * ( -sin($phase) ) );
-		$d .= ", $sx\t$sy Z";
-		$g->path(
-			id    => $id,
-			style => q//,
-			d     => $d,
-		);
-	}
-	elsif ( $phase > pi ) {
+        # moon waxing partial
+        my $d = "M $sx\t$sy C ";
+        $d .= ( $sx + $r * $MOON_RADIAL_STEP ) . q/ / . $sy . q/,/;
+        $d .= ( $sx + $r * $MOON_RADIAL_STEP ) . q/ / . $ey;
+        $d .= ",$ex\t$ey C ";
+        $d .= ( $ex - $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $ey + $r / 2 * ( -sin($phase) ) ) . q/,/;
+        $d .= ( $ex - $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $sy - $r / 2 * ( -sin($phase) ) );
+        $d .= ", $sx\t$sy Z";
+        $g->path(
+            id    => $id,
+            style => q//,
+            d     => $d,
+        );
+    }
+    elsif ( $phase > pi ) {
 
-		# moon waning partial
-		my $d = "M $sx\t$sy C ";
-		$d .= ( $sx - $r * $MOON_RADIAL_STEP ) . q/ / . $sy . q/,/;
-		$d .= ( $sx - $r * $MOON_RADIAL_STEP ) . q/ / . $ey;
-		$d .= ",$ex\t$ey C ";
-		$d .= ( $ex + $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $ey - $r / 2 * ( -sin($phase) ) ) . q/,/;
-		$d .= ( $ex + $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $sy + $r / 2 * ( -sin($phase) ) );
-		$d .= ", $sx\t$sy Z";
-		$g->path(
-			id    => $id,
-			style => q//,
-			d     => $d,
-		);
-	}
+        # moon waning partial
+        my $d = "M $sx\t$sy C ";
+        $d .= ( $sx - $r * $MOON_RADIAL_STEP ) . q/ / . $sy . q/,/;
+        $d .= ( $sx - $r * $MOON_RADIAL_STEP ) . q/ / . $ey;
+        $d .= ",$ex\t$ey C ";
+        $d .= ( $ex + $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $ey - $r / 2 * ( -sin($phase) ) ) . q/,/;
+        $d .= ( $ex + $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $sy + $r / 2 * ( -sin($phase) ) );
+        $d .= ", $sx\t$sy Z";
+        $g->path(
+            id    => $id,
+            style => q//,
+            d     => $d,
+        );
+    }
 
-	$g->circle(
-		id    => "moon_border_$id",
-		class => 'outline',
-		style => $style,
-		cx    => $x,
-		cy    => ( $sy + $ey ) / 2,
-		r     => $r,
-	);
+    $g->circle(
+        id    => "moon_border_$id",
+        class => 'outline',
+        style => $style,
+        cx    => $x,
+        cy    => ( $sy + $ey ) / 2,
+        r     => $r,
+    );
 
-	return $g->xmlify();
+    return $g->xmlify();
 }
 
 sub get_moon_phase {
 
-	my ( $self, $date ) = @_;
+    my ( $self, $date ) = @_;
 
-	if ( !blessed $date || !$date->isa('Class::Date') ) {
-		$date = Class::Date->new($date);
-	}
+    if ( !blessed $date || !$date->isa('Class::Date') ) {
+        $date = Class::Date->new($date);
+    }
 
-	if ( !$date ) {
-		carp 'Unable to create a date!';
-	}
+    if ( !$date ) {
+        carp 'Unable to create a date!';
+    }
 
-	# check if we have a way to calculate the phase of the moon
-	if ( !$self->{moon_phase} ) {
-		my @packages = qw/Astro::Coord::ECI::Moon Astro::MoonPhase/;
+    # check if we have a way to calculate the phase of the moon
+    if ( !$self->{moon_phase} ) {
+        my @packages = qw/Astro::Coord::ECI::Moon Astro::MoonPhase/;
 
-		PACKAGE:
-		for my $package (@packages) {
-			my $package_file = $package;
-			$package_file =~ s{::}{/}gxms;
+        PACKAGE:
+        for my $package (@packages) {
+            my $package_file = $package;
+            $package_file =~ s{::}{/}gxms;
 
-			eval{ require $package_file . '.pm' };  ## no critic
-			if ( !$EVAL_ERROR ) {
-				$self->{moon_phase} = $package;
-				last PACKAGE;
-			}
-		}
+            eval{ require $package_file . '.pm' };  ## no critic
+            if ( !$EVAL_ERROR ) {
+                $self->{moon_phase} = $package;
+                last PACKAGE;
+            }
+        }
 
-		# croak if there is no way to calculate the phase of the moon
-		if ( !$self->{moon_phase} ) {
-			die "Cannot find any packages installed to calculate the moon phase\nTry installing one of:\ncpan "
-				. join( "\ncpan ", @packages ) . "\n";
-		}
-	}
+        # croak if there is no way to calculate the phase of the moon
+        if ( !$self->{moon_phase} ) {
+            die "Cannot find any packages installed to calculate the moon phase\nTry installing one of:\ncpan "
+                . join( "\ncpan ", @packages ) . "\n";
+        }
+    }
 
-	my $phase;
-	if ( $self->{moon_phase} eq 'Astro::Coord::ECI::Moon' ) {
+    my $phase;
+    if ( $self->{moon_phase} eq 'Astro::Coord::ECI::Moon' ) {
 
-		# phase in radians
-		$phase = Astro::Coord::ECI::Moon->phase( $date->epoch() );
-	}
-	elsif ( $self->{moon_phase} eq 'Astro::MoonPhase' ) {
+        # phase in radians
+        $phase = Astro::Coord::ECI::Moon->phase( $date->epoch() );
+    }
+    elsif ( $self->{moon_phase} eq 'Astro::MoonPhase' ) {
 
-		# phase in fraction of circle
-		($phase) = Astro::MoonPhase::phase( $date->epoch() );
-		$phase *= 2 * pi;
-	}
-	elsif ( $self->{moon_phase} eq 'DateTime::Util::Astro::Moon' ) {
+        # phase in fraction of circle
+        ($phase) = Astro::MoonPhase::phase( $date->epoch() );
+        $phase *= 2 * pi;
+    }
+    elsif ( $self->{moon_phase} eq 'DateTime::Util::Astro::Moon' ) {
 
-		# phase in degrees
-		($phase) = DateTime::Util::Astro::Moon::lunar_phase( DateTime->new( $date->epoch() ) );
-		$phase *= 2 * pi / $FULL_CIRCLE_DEGREES;
-	}
+        # phase in degrees
+        ($phase) = DateTime::Util::Astro::Moon::lunar_phase( DateTime->new( $date->epoch() ) );
+        $phase *= 2 * pi / $FULL_CIRCLE_DEGREES;
+    }
 
-	return $phase;
+    return $phase;
 }
 
 1;
