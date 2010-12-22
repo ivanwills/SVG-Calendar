@@ -19,148 +19,160 @@ use SVG::Calendar;
 our $VERSION = version->new('0.2.0');
 
 my %option = (
-	moon     => {},
-	date     => {},
-	ical     => {},
-	page     => {},
-	image    => {},
-	height   => 0.5,
-	config   => "$ENV{HOME}/.svgcal",
-	path     => undef,
-	template => undef,
-	verbose  => 0,
-	man      => 0,
-	help     => 0,
-	VERSION  => 0,
+    moon     => {},
+    date     => {},
+    ical     => {},
+    page     => {},
+    image    => {},
+    height   => 0.5,
+    config   => "$ENV{HOME}/.svgcal",
+    path     => undef,
+    template => undef,
+    verbose  => 0,
+    man      => 0,
+    help     => 0,
+    VERSION  => 0,
 );
 
 if ( !@ARGV ) {
-	pod2usage( -verbose => 1 );
+    pod2usage( -verbose => 1 );
 }
 
 main();
 exit 0;
 
 sub main {
-	Getopt::Long::Configure('bundling');
-	GetOptions(
-		\%option,
-		'moon|m=s%',
-		'date|d=s%',
-		'ical|c=s%',
-		'page|p=s%',
-		'image|i=s%',
-		'calendar_height|height|h=s',
-		'config|C=s',
-		'path|P=s',
-		'template|t=s',
-		'out|o=s',
-		'save|s',
-		'show-template',
-		'verbose|v!',
-		'man',
-		'help',
-		'VERSION'
-	) or pod2usage(2);
+    Getopt::Long::Configure('bundling');
+    GetOptions(
+        \%option,
+        'moon|m=s%',
+        'date|d=s%',
+        'ical|c=s%',
+        'page|p=s%',
+        'image|i=s%',
+        'calendar_height|height|h=s',
+        'config|C=s',
+        'path|P=s',
+        'template|t=s',
+        'out|o=s',
+        'save|s',
+        'show-template',
+        'verbose|v!',
+        'man',
+        'help',
+        'VERSION'
+    ) or pod2usage(2);
 
-	if ( $option{VERSION} ) {
-		print "svgcal.pl Version = $VERSION\n";
-		exit 1;
-	}
-	if ( $option{man} ) {
-		pod2usage( -verbose => 2 );
-	}
-	if ( $option{help} ) {
-		pod2usage( -verbose => 1 );
-	}
+    if ( $option{VERSION} ) {
+        print "svgcal.pl Version = $VERSION\n";
+        exit 1;
+    }
+    if ( $option{man} ) {
+        pod2usage( -verbose => 2 );
+    }
+    if ( $option{help} ) {
+        pod2usage( -verbose => 1 );
+    }
 
-	# do stuff here
-	my $cal;
+    # do stuff here
+    my $cal;
 
-	if ( $option{save} && !-f $option{config} ) {
-		open my $fh, '>', $option{config} or warn "Cannot create the configuration file '$option{config}': $!";  ## no critic
-		if ($fh) {
-			print {$fh} "\n" or print {*STDERR} "Cannot print to file '$option{config}': $!\n";
-			close $fh or print {*STDERR} "Cannot close file '$option{config}': $!\n";
-		}
-	}
+    if ( $option{save} && !-f $option{config} ) {
+        open my $fh, '>', $option{config} or warn "Cannot create the configuration file '$option{config}': $!";  ## no critic
+        if ($fh) {
+            print {$fh} "\n" or print {*STDERR} "Cannot print to file '$option{config}': $!\n";
+            close $fh or print {*STDERR} "Cannot close file '$option{config}': $!\n";
+        }
+    }
 
-	if (@ARGV) {
-		for my $img (grep {/=/} @ARGV) {
-			my ($month, $src) = split /=/, $img, 2;
-			$option{image}{$month} = $src;
-		}
-	}
+    if (@ARGV) {
+        for my $img (grep {/=/} @ARGV) {
+            my ($month, $src) = split /=/, $img, 2;
+            $option{image}{$month} = $src;
+        }
+    }
 
-	if ( $option{'show-template'} ) {
-		show_template();
-	}
+    if ( -d $option{image}{dir} && $option{date} && $option{date}{year} ) {
+        my $year = $option{date}{year};
+        for my $i ( 1 .. 12 ) {
+            my $month = $i < 10 ? "0$i" : $i;
+            $option{image}{"$year-$month"} = "$option{image}{dir}/$month.jpg";
+        }
+    }
 
-	my %config = -f $option{config} ? get_config() : %option;
-	$cal = SVG::Calendar->new(%config);
+    if ( $option{'show-template'} ) {
+        show_template();
+    }
 
-	if ( $option{date}{month} ) {
-		$cal->output_month( $option{date}{month}, $option{out} || q/-/ );
-	}
-	else {
-		die 'No page output file name base specified!' if !$option{out};  ## no critic
+    my %config = -f $option{config} ? get_config() : %option;
+    $cal = SVG::Calendar->new(%config);
 
-		if ( $option{date}{year} ) {
-			$cal->output_year( $option{date}{year}, $option{out} );
-		}
-		else {
-			$cal->output_year( $option{date}{start}, $option{date}{end}, $option{out} );
-		}
-	}
+    if ( $option{verbose} ) {
+        $cal->{verbose} = $option{verbose};
+    }
 
-	return;
+    if ( $option{date}{month} ) {
+        $cal->output_month( $option{date}{month}, $option{out} || q/-/ );
+    }
+    else {
+        die 'No page output file name base specified!' if !$option{out};  ## no critic
+
+        if ( $option{date}{year} ) {
+            $cal->output_year( $option{date}{year}, $option{out} );
+        }
+        else {
+            $cal->output_year( $option{date}{start}, $option{date}{end}, $option{out} );
+        }
+    }
+
+    return;
 }
 
 sub show_template {
-	my $found = 0;
-	while ( my $line = <SVG::Calendar::DATA> ) {
-		if ( $found ) {
-			print $line;
-		}
-		elsif ( $line =~ /^__calendar.svg__$/xms ) {
-			$found = 1;
-		}
-	}
-	return exit 0;
+    my $found = 0;
+    while ( my $line = <SVG::Calendar::DATA> ) {
+        if ( $found ) {
+            print $line;
+        }
+        elsif ( $line =~ /^__calendar.svg__$/xms ) {
+            $found = 1;
+        }
+    }
+    return exit 0;
 }
 
 sub get_config {
-	read_config $option{config} => my %config;
+    read_config $option{config} => my %config;
 
 OPTION:
-	for my $key ( keys %option ) {
-		next OPTION if !ref $option{$key};
+    for my $key ( keys %option ) {
+        next OPTION if !ref $option{$key};
 
-		for my $subkey ( keys %{ $option{$key} } ) {
+        for my $subkey ( keys %{ $option{$key} } ) {
 
-			# override the config file settings
-			$config{$key}{$subkey} = $option{$key}{$subkey};
-		}
-	}
+            # override the config file settings
+            $config{$key}{$subkey} = $option{$key}{$subkey};
+        }
+    }
 
-	if ( $option{page} ) {
-		$config{page} = $option{page};
-	}
-	if ( $option{path} ) {
-		$config{path} = $option{path};
-	}
-	if ( $option{template} ) {
-		$config{template} = $option{template};
-	}
-	if ( $option{image} ) {
-		$config{image} = $option{image};
-	}
+    if ( $option{page} ) {
+        $config{page} = $option{page};
+    }
+    if ( $option{path} ) {
+        $config{path} = $option{path};
+    }
+    if ( $option{template} ) {
+        $config{template} = $option{template};
+    }
+    if ( $option{image} ) {
+        $config{image} = $option{image};
+    }
 
-	if ( $option{save} && -f $option{config} ) {
-		write_config %config;
-	}
+    if ( $option{save} && -f $option{config} ) {
+        write_config %config;
+    }
 
-	return %config;
+    return %config;
 }
 
 __DATA__
@@ -191,6 +203,8 @@ This documentation refers to svgcal.pl version 0.2.0.
     quarters=1|0    Show only whole quarters
     vpos=top|bottom Specifies which quadrent the moon should appear in
     hpos=left|right as above
+    xoffset=num     Precisly set the x position of moon
+    yoffset=num     Precisly set the y position of moon
     radius=n%       The radius as a percentage of day box width
     image=url       An image of the moon to use as the fill background of
                     the moon
@@ -202,6 +216,8 @@ This documentation refers to svgcal.pl version 0.2.0.
   -i --image     Specifies the images to be displayed on the calendar
     src=file        This image will be used for any image with out a specific
                     month image.
+    dir=directory   Finds images in the directory named after the months
+                    (eg 01-12 or January-December)
     YYYY-MM=file    Use this image for the specified month
   -h --height    The height on the page that the calendar shoud take up.
                  Either a fraction or a percent (Default 50%)
