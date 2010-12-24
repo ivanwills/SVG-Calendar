@@ -861,7 +861,8 @@ __calendar.svg__
 				[% IF col.text.style %]style="[% col.text.style %]"[% END %]
 				[% IF col.text.length %]textLength="[% col.text.length %]"[% END %]
 				[% IF col.text.adjust %]lengthAdjust="[% col.text.adjust %]"[% END %]>
-				[% col.text.text %]</text>[% END %]
+				[% col.text.text %]
+			</text>[% END %]
 			[% IF col.moon %][% col.moon %][% END %]
 		</g>
 				[%- j=j+1 -%]
