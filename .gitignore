@@ -1,0 +1,8 @@
+.*.sw[po]
+tmp/
+Build
+MYMETA.yml
+_build/
+blib/
+tags
+.vimtagsdisplay
