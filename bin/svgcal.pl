@@ -92,7 +92,12 @@ sub main {
         }
     }
 
-    if ( -d $option{image}{dir} && $option{date} && $option{date}{year} ) {
+    if (
+        $option{image}{dir}
+        && -d $option{image}{dir}
+        && $option{date}
+        && $option{date}{year}
+    ) {
         my $year = $option{date}{year};
         for my $i ( 1 .. 12 ) {
             my $month = $i < 10 ? "0$i" : $i;
@@ -104,7 +109,7 @@ sub main {
         show_template();
     }
 
-    my %config = -f $option{config} ? get_config() : %option;
+    my %config = get_config();
     $cal = SVG::Calendar->new(%config);
 
     if ( $option{verbose} ) {
@@ -115,7 +120,7 @@ sub main {
         $cal->output_month( $option{date}{month}, $option{out} || q/-/ );
     }
     else {
-        die 'No page output file name base specified!' if !$option{out};  ## no critic
+        die "No page output file name base specified!\n" if !$option{out};  ## no critic
 
         if ( $option{date}{year} ) {
             $cal->output_year( $option{date}{year}, $option{out} );
@@ -142,6 +147,10 @@ sub show_template {
 }
 
 sub get_config {
+    if ( !-f $option{config} ) {
+        template_config($option{config});
+    }
+
     read_config $option{config} => my %config;
 
 OPTION:
@@ -173,6 +182,97 @@ OPTION:
     }
 
     return %config;
+}
+
+sub template_config {
+    my ($file) = @_;
+
+    open my $fh, '>', $file or return;
+
+    print {$fh} <<"CONFIG";
+# this section configures the information about the images
+[image]
+
+# src
+# This allows specifying one image file.
+# src: image.jpg
+
+# YYYY-MM
+# This is the format for specifying a specific month's image
+#2012-01: car.gif
+#2012-02: horse.tiff
+
+# dir
+# This option allows the specifying of a directory to contain all the images
+# for the months that calendars are going to be produced. The images should
+# in the directory be specified as MM.[jpg|png] or month.[jpg|png] eg 01.jpg
+# or January.png
+#dir: .
+
+# The page section sets up the SVG document size
+[page]
+
+# page
+# This allows you to specify specific page sizes eg A4. Known page sizes
+# include A0, A1, A2, A3, A4, A5, A6
+#page: A4
+
+# height
+# If the svg document size is not one of the predefined sizes you can use
+# this setting to set the height of the document. If no units are specified
+# the height is in pixels.
+#height: 200mm
+
+# width
+# Like height you set the SVG document size to an arbitart width
+#width: 10cm
+
+# This section controlls the displaying of the moon on the produced calendars
+[moon]
+
+# display
+# Turn on displaying of the moon (requires Astro::Coord::ECI::Moon or
+# Astro::MoonPhase to be installed)
+#display: 1
+display: 0
+
+# quarters
+# Toggles weather to only display the moon for the various quarters or to
+# show what phase the moon is in for every day.
+#quarters: 1
+quarters: 0
+
+# vpos
+# Specifies weather the moon should be aligned with the top or bottom of the
+# day's square.
+#vpos: top
+
+# hpos
+# Specifies weather the moon should be aligned with the left or right hand
+# side of the day's square.
+#hpos: right
+
+# xoffset, yoffset
+# These parameters specify the x and y offsets of the moon, the units are
+# relative units (ie page size independant) with the size of the dates square
+# being approximatly 10x16
+#xoffset: 10
+#yoffset: 10
+
+# radius
+# This specifies the size of the moon in the date's square
+#radius: 1.0
+
+# image
+# This option specifies an image file that will be used as the background for
+# the moon.
+#image: moon.jpg
+
+CONFIG
+
+    close $fh;
+
+    return;
 }
 
 __DATA__
@@ -239,6 +339,18 @@ This documentation refers to svgcal.pl version 0.2.0.
      --man       Prints the full documentation for svgcal.pl
 
 =head1 DESCRIPTION
+
+This script provides a comand line interface to the SVG::Calendar library. Most
+of the functionality is exposed here.
+
+=head2 Configuration
+
+To make configuration using this tool options can be saved to thee ~/.svgcal
+file. The format of the configuration file is similar to ini files. The
+easiest way to start using the configuration file is once you have set up
+the options that you like use the --save option which will write the current
+configuration to the file. If you use --save again the file should be updated
+leaving comments in place.
 
 =head1 SUBROUTINES/METHODS
 
