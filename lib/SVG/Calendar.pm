@@ -251,6 +251,8 @@ sub output_year {
     my $file = pop @params;
     my ( $start, $end ) = @params;
 
+    return if !$start;
+
     if ($end) {
         $start = Class::Date->new("$start-01");
         $end   = Class::Date->new("$end-01");
@@ -303,6 +305,9 @@ sub output_month {
         my $wday = $month_day->wday();
         $wday = $wday == 1 ? $ONE_WEEK : $wday - 1;
         my $r = $templ->{cal}[$row][$wday]{width} / $DAY_COLS;
+        if ( $self->{moon}{radius} ) {
+            $r *= $self->{moon}{radius};
+        }
 
         $templ->{cal}[$row][$wday]{text}{text} = $month_day->mday();
         $templ->{cal}[$row][$wday]{current} = $date->month() == $month_day->month() ? 1 : 2;
@@ -406,6 +411,15 @@ sub output {
             print {$fh} $text or carp "Could not write to file '$file': $OS_ERROR\n";
 
             close $fh or carp "There was an issue closing file '$file': $OS_ERROR\n";
+
+            if ( -f $file && $self->{inkscape} ) {
+                if ( $self->{inkscape}{pdf} ) {
+                    # get inkscape to convert svg to PDF
+                }
+                if ( $self->{inkscape}{print} ) {
+                    # get inkscape to print out the document
+                }
+            }
         }
     }
 
@@ -599,6 +613,9 @@ Arg: C<moon> - hash ref - description
 Arg: C<image> - hash ref - description
 
 Arg: C<path> - string - Directory containing alternate svg template version
+
+Arg: C<inkscape> - hash ref - Use inkscape to convert the SVG to a PDF or to
+print out the generated SVG calendar.
 
 Return: SVG::Calendar - A new SVG::Calendar object
 
