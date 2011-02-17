@@ -21,7 +21,7 @@ my @months = $cal->output_year('2008', 'test');
 ok( @months == 12, 'Try to generate output for a year' );
 
 for my $file (@months) {
-	ok( -s $file, 'The month calandar has some size' );
-	# clean up
-	unlink $file;
+    ok( -s $file, 'The month calandar has some size' );
+    # clean up
+    unlink $file;
 }
