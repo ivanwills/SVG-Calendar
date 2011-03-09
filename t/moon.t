@@ -5,7 +5,7 @@ use warnings;
 use Test::More tests => 31 * 4;
 use SVG::Calendar;
 
-my @packages = qw/Astro::Coord::ECI::Moon Astro::MoonPhase DateTime::Util::Astro::Moon/;
+my @packages = qw/Astro::Coord::ECI::Moon Astro::MoonPhase /;
 my %found;
 
 for my $package (@packages) {
@@ -65,7 +65,7 @@ for my $package (@packages) {
 
         for my $date (keys %phases) {
             my $phase = $cal->get_moon_phase($date);
-            ok( abs( $phases{$date} - $phase ) < 0.005, "$phase is approximatly $phases{$date} of $date" );
+            ok( abs( $phases{$date} - $phase ) < 0.005, "$phase is approximatly $phases{$date} of $date with $package" );
         }
 
     }
