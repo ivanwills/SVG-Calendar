@@ -15,7 +15,7 @@ use Data::Dumper qw/Dumper/;
 use Clone qw/clone/;
 use Math::Trig;
 use SVG;
-use Class::Date;
+use DateTime::Format::Strptime qw/strptime strftime/;
 use Template;
 use Template::Provider::FromDATA;
 use Readonly;
@@ -254,11 +254,11 @@ sub output_year {
     return if !$start;
 
     if ($end) {
-        $start = Class::Date->new("$start-01");
-        $end   = Class::Date->new("$end-01");
+        $start = strptime('%F', "$start-01");
+        $end   = strptime('%F', "$end-01");
     }
     else {
-        $start = Class::Date->new("$start-01-01");
+        $start = strptime('%F', "$start-01-01");
         $end   = $start + $INTERVAL_ELEVEN_MONTHS;
     }
 
@@ -286,7 +286,7 @@ sub output_month {
 
     carp "Month '$month' is not the correct format (YYYY-MM) " if !$month || $month !~ /\A\d{4}-\d{2}\Z/xms;
 
-    my $date = Class::Date->new("$month-01");
+    my $date = strptime('%F', "$month-01");
     $templ->{year}{text}  = $date->year();
     $templ->{month}{text} = $date->monthname();
     my $month_day = $date - $INTERVAL_ONE_WEEK;
@@ -516,8 +516,8 @@ sub get_moon_phase {
 
     my ( $self, $date ) = @_;
 
-    if ( !blessed $date || !$date->isa('Class::Date') ) {
-        $date = Class::Date->new($date);
+    if ( !blessed $date || !$date->isa('DateTime') ) {
+        $date = strptime('%F %T', "$date 12:00:00");
     }
 
     if ( !$date ) {
@@ -722,7 +722,7 @@ based on the x, y and r parameters.
 
 =head3 C<get_moon_phase ( $date )>
 
-Param: C<$date> - date (Class::Date object or string to convert to one) - The
+Param: C<$date> - date (DateTime object or string to convert to one) - The
 date that the moon phase is desired
 
 Return: float - The phase of the moon from 0 (new moon) via 2 (full moon) to
