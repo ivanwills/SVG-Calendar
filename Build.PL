@@ -19,6 +19,10 @@ my $builder = Module::Build->new(
         'Readonly'                     => '1.03',
         'version'                      => '0.74',
     },
+    recommends => {
+         'Astro::Coord::ECI::Moon'     => 0,
+         'Astro::MoonPhase'            => 0,
+    },
     build_requires => {
         'Test::More'          => 0,
         'Test::Pod'           => 0,
