@@ -559,12 +559,6 @@ sub get_moon_phase {
         ($phase) = Astro::MoonPhase::phase( $date->epoch() );
         $phase *= 2 * pi;
     }
-    elsif ( $self->{moon_phase} eq 'DateTime::Util::Astro::Moon' ) {
-
-        # phase in degrees
-        ($phase) = DateTime::Util::Astro::Moon::lunar_phase( DateTime->new( $date->epoch() ) );
-        $phase *= 2 * pi / $FULL_CIRCLE_DEGREES;
-    }
 
     return $phase;
 }
