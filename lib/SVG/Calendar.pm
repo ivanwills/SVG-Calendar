@@ -43,10 +43,10 @@ Readonly my $HEADING_WOY_WIDTH_SCALE  => 4;
 Readonly my $HEADING_WOY_HEIGHT_SCALE => 0.9;
 Readonly my $MAX_WEEK_ROW             => 5;
 Readonly my $MAX_DAYS                 => 42;
-Readonly my $INTERVAL_ONE_DAY         => q{1D};
-Readonly my $INTERVAL_ONE_WEEK        => q{7D};
-Readonly my $INTERVAL_ONE_MONTH       => q{1M};
-Readonly my $INTERVAL_ELEVEN_MONTHS   => q{11M};
+Readonly my $INTERVAL_ONE_DAY         => DateTime::Duration->new(days => 1);
+Readonly my $INTERVAL_ONE_WEEK        => DateTime::Duration->new(days => 7);
+Readonly my $INTERVAL_ONE_MONTH       => DateTime::Duration->new(months => 1);
+Readonly my $INTERVAL_ELEVEN_MONTHS   => DateTime::Duration->new(months => 11);
 Readonly my $FULL_MOON                => 100;
 Readonly my $MOON_RADIAL_STEP         => 1.34;
 Readonly my $MOON_AT_NIGHT            => q{20};
@@ -288,7 +288,7 @@ sub output_month {
 
     my $date = strptime('%F', "$month-01");
     $templ->{year}{text}  = $date->year();
-    $templ->{month}{text} = $date->monthname();
+    $templ->{month}{text} = $date->month_name();
     my $month_day = $date - $INTERVAL_ONE_WEEK;
     my $row       = 1;
     my $wrap      = 0;
@@ -517,7 +517,7 @@ sub get_moon_phase {
     my ( $self, $date ) = @_;
 
     if ( !blessed $date || !$date->isa('DateTime') ) {
-        $date = strptime('%F %T', "$date 12:00:00");
+        $date = strptime('%F %T', "$date 20:00:00");
     }
 
     if ( !$date ) {
