@@ -21,8 +21,8 @@ my $builder = Module::Build->new(
         'version'                      => '0.74',
     },
     recommends => {
-         'Astro::Coord::ECI::Moon'     => 0,
-         'Astro::MoonPhase'            => 0,
+         'Astro::Coord::ECI::Moon'     => 0.044,
+         'Astro::MoonPhase'            => 0.60,
     },
     build_requires => {
         'Test::More'          => 0,
