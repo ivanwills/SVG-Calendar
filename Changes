@@ -1,5 +1,26 @@
 Revision history for Perl extension SVG::Calendar
 
+0.3.0 2011-12-09
+    Updated license text
+    Added missing new generated META.json file
+    Fixed spelling mistakes, updated list of stop words
+    Trying to make t/moon.t more stable verses moon phase calculations
+    Added missing requirement
+    Removed generated files from repo, updated ignores/skips
+    Removed some vestages of Class::Date
+    Added recommends section for moon phase calculation modules
+    Removed DateTime::Util::Astro::Moon use as it no longer appears to be on CPAN
+    More ignore sorting
+    Changed from requiring Class::Date to DateTime
+    Removed DateTime::Util::Astro::Moon option which doesn't seem to exist any more
+    Converted tabs to spaces
+    Started to implement detailed config with comments for default values
+    implemented changing the moons radius, fixed an issue when no start month supplied and started to implement export options
+    Added ignore file
+    Cleaned template
+    Added some extra logic checking
+    Added specifying images by month number, fixed POD
+
 0.2.0 2010-10-02
     Fixed spelling test from failing when no spell command exists
     other code cleanups
