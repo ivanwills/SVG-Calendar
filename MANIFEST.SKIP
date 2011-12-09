@@ -16,7 +16,7 @@
 \bblibdirs$
 ^MANIFEST\.SKIP$
 
-# Avoid VMS specific Makmaker generated files
+# Avoid VMS specific Makemaker generated files
 \bDescrip.MMS$
 \bDESCRIP.MMS$
 \bdescrip.mms$
@@ -47,8 +47,10 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 
-# Avoid vim temporary file
-.*\.sw[po]$
+# Avoid vim temporary file and other vim generated files
+.*\.sw[ponxmn]$
+.vimtagsdisplay
+tags
 
 # This generated file
 \bMYMETA.yml$
@@ -61,7 +63,12 @@ Debian_CPANTS.txt
 
 # Avoid archives of this distribution
 \bSVG-Calendar-[\d\.\_]+
-vim.sh
-.vimtagsdisplay
-tags
 
+# Avoid prove saved state file
+.prove
+
+# Other files of interest
+vim.sh
+tmp*
+temp*
+errors.err

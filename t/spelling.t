@@ -25,5 +25,17 @@ for my $dir ( split /:/, $ENV{PATH} ) {
 plan skip_all => "Test::Spelling required for testing POD spelling" if $@;
 plan skip_all => "spell command required for testing POD spelling" if !$found;
 
-add_stopwords(qw/Hornsby NSW SVG svg QLD svgcal STDOUT Param Arg pl YYYY Initialises/);
+add_stopwords(qw/
+    NSW
+    Hornsby
+    Param
+    Arg
+    SVG
+    svg
+    svgcal
+    STDOUT
+    pl
+    YYYY
+    Initialises
+/);
 all_pod_files_spelling_ok();
