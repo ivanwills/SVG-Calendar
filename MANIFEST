@@ -18,3 +18,4 @@ t/critic.t
 t/perlcriticrc
 bin/svgcal.pl
 META.yml
+META.json
