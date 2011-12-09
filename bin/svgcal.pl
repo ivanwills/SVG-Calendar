@@ -340,13 +340,13 @@ This documentation refers to svgcal.pl version 0.2.0.
 
 =head1 DESCRIPTION
 
-This script provides a comand line interface to the SVG::Calendar library. Most
+This script provides a command line interface to the SVG::Calendar library. Most
 of the functionality is exposed here.
 
 =head2 Configuration
 
 To make configuration using this tool options can be saved to thee ~/.svgcal
-file. The format of the configuration file is similar to ini files. The
+file. The format of the configuration file is similar to INI files. The
 easiest way to start using the configuration file is once you have set up
 the options that you like use the --save option which will write the current
 configuration to the file. If you use --save again the file should be updated

@@ -37,5 +37,9 @@ add_stopwords(qw/
     pl
     YYYY
     Initialises
+    INI
+    DateTime
+    PDF
+    inkscape
 /);
 all_pod_files_spelling_ok();
