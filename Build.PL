@@ -9,6 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from => 'lib/SVG/Calendar.pm',
     requires          => {
         'perl'                         => 5.008,
+        'Config::Std'                  => 0,
         'SVG'                          => '2.33',
         'Math::Trig'                   => '1.15',
         'Template'                     => '2.14',
