@@ -20,6 +20,9 @@ my $builder = Module::Build->new(
         'Readonly'                     => '1.03',
         'version'                      => '0.74',
     },
+    configure_requires => {
+        'Module::Build' => 0.38,
+    },
     build_requires => {
         'Test::More' => 0,
     },
