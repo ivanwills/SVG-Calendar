@@ -1,13 +1,19 @@
 Revision history for Perl extension SVG::Calendar
 
-0.3.1 2012-07-21
+v0.3.2   2014-06-02
+    Fixed executable bit (Ivan Wills)
+    Adding tag files (Ivan Wills)
+    Added configure requires section (Ivan Wills)
+    Added new releases chagne log (Ivan Wills)
+
+v0.3.1 2012-07-21
     Build updates
     Upped version number
     Fixed up Build.PL script
     Got test to my latest standards
     Updated version to 0.3, added version changes to change log
 
-0.3.0 2011-12-09
+v0.3.0 2011-12-09
     Updated license text
     Added missing new generated META.json file
     Fixed spelling mistakes, updated list of stop words
