@@ -16,7 +16,7 @@ use Config::Std;
 use Data::Dumper qw/Dumper/;
 use SVG::Calendar;
 
-our $VERSION = version->new('0.3.1');
+our $VERSION = version->new('0.3.2');
 
 my %option = (
     moon     => {},
@@ -283,7 +283,7 @@ svgcal.pl - Creates the pages for a calendar in SVG format
 
 =head1 VERSION
 
-This documentation refers to svgcal.pl version 0.3.1.
+This documentation refers to svgcal.pl version 0.3.2.
 
 =head1 SYNOPSIS
 
