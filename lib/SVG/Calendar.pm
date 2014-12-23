@@ -23,7 +23,7 @@ use Image::ExifTool qw/ImageInfo/;
 use English '-no_match_vars';
 use base qw/Exporter/;
 
-our $VERSION   = version->new('0.3.3');
+our $VERSION   = version->new('0.3.4');
 our @EXPORT_OK = qw//;
 
 Readonly my $MARGIN_RATIO             => 0.04;
@@ -573,7 +573,7 @@ SVG::Calendar - Creates calendars in SVG format which can be printed
 
 =head1 VERSION
 
-This documentation refers to SVG::Calendar version 0.3.3.
+This documentation refers to SVG::Calendar version 0.3.4.
 
 =head1 SYNOPSIS
 

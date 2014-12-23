@@ -1,5 +1,15 @@
 Revision history for Perl extension SVG::Calendar
 
+0.3.4   2014-12-23
+        Updating for release of version 0.3.4
+        Updated dependencies (Ivan Wills)
+        Added new dependency (Ivan Wills)
+        Updated license (Ivan Wills)
+        Updated manifest (Ivan Wills)
+        Added warning about not specifying any dates (Ivan Wills)
+        Fixed moon at night not being a duration object (Ivan Wills)
+        Updated tests (Ivan Wills)
+
 0.3.3   2014-08-21
         Updated manifest (Ivan Wills)
         Cleaned up the tests (Ivan Wills)
