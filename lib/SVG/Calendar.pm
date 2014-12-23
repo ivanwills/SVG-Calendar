@@ -49,7 +49,7 @@ Readonly my $INTERVAL_ONE_MONTH       => DateTime::Duration->new(months => 1);
 Readonly my $INTERVAL_ELEVEN_MONTHS   => DateTime::Duration->new(months => 11);
 Readonly my $FULL_MOON                => 100;
 Readonly my $MOON_RADIAL_STEP         => 1.34;
-Readonly my $MOON_AT_NIGHT            => q{20};
+Readonly my $MOON_AT_NIGHT            => DateTime::Duration->new(hours => 20);
 Readonly my $FULL_CIRCLE_DEGREES      => 360;
 Readonly my $ONE_WEEK                 => 7;
 
