@@ -67,10 +67,14 @@ sub main {
         print "svgcal.pl Version = $VERSION\n";
         exit 1;
     }
-    if ( $option{man} ) {
+    elsif ( $option{man} ) {
         pod2usage( -verbose => 2 );
     }
-    if ( $option{help} ) {
+    elsif ( $option{help} ) {
+        pod2usage( -verbose => 1 );
+    }
+    elsif ( $option{date} ) {
+        warn "No dates specified, nothing to do!\n";
         pod2usage( -verbose => 1 );
     }
 
