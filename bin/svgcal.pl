@@ -73,7 +73,7 @@ sub main {
     elsif ( $option{help} ) {
         pod2usage( -verbose => 1 );
     }
-    elsif ( $option{date} ) {
+    elsif ( !$option{date} ) {
         warn "No dates specified, nothing to do!\n";
         pod2usage( -verbose => 1 );
     }
