@@ -17,7 +17,7 @@ use Math::Trig;
 use SVG;
 use DateTime::Format::Strptime qw/strptime strftime/;
 use Template;
-use Template::Provider::FromDATA;
+use File::ShareDir qw/dist_dir/;
 use Readonly;
 use Image::ExifTool qw/ImageInfo/;
 use English '-no_match_vars';
@@ -385,12 +385,9 @@ sub output {
 
     my $fh;
     my %option = ( EVAL_PERL => 1 );
+    $option{INCLUDE_PATH} = dist_dir('SVG-Calendar');
     if ( $self->{path} ) {
-        $option{INCLUDE_PATH} = $self->{path};
-    }
-    else {
-        my $provider = Template::Provider::FromDATA->new( { CLASSES => __PACKAGE__ } );
-        $option{LOAD_TEMPLATES} = [$provider];
+        $option{INCLUDE_PATH} .= ':' . $self->{path};
     }
 
     my $tmpl = $self->{tt} || Template->new(%option);

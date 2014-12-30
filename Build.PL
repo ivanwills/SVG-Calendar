@@ -36,6 +36,11 @@ my $builder = Module::Build->new(
         'Test::Kwalitee'          => 0,
         'Pod::Coverage'           => 0,
     },
+    share_dir => {
+        dist => [
+            'templates',
+        ],
+    },
     add_to_cleanup     => [ 'SVG-Calendar-*' ],
     create_makefile_pl => 'traditional',
     create_license     => 1,
