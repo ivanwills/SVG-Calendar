@@ -473,7 +473,6 @@ sub moon {
         $moon->{highlight} = {
             type  => 'path',
             id    => $id,
-            style => q//,
             d     => $d,
         };
     }
@@ -490,7 +489,6 @@ sub moon {
         $moon->{highlight} = {
             type  => 'path',
             id    => $id,
-            style => q//,
             d     => $d,
         };
     }
@@ -498,7 +496,7 @@ sub moon {
     $moon->{border} = {
         id    => "moon_border_$id",
         class => 'outline',
-        style => $style,
+        ( $style ? (style => $style) : () ),
         cx    => $x,
         cy    => ( $sy + $ey ) / 2,
         r     => $r,
