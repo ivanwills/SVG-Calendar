@@ -17,7 +17,6 @@ my $builder = Module::Build->new(
         'Math::Trig'                 => '1.15',
         'Path::Tiny'                 => '0.061',
         'Readonly'                   => '1.03',
-        'SVG'                        => '2.33',
         'Scalar::Util'               => 0,
         'Template'                   => '2.14',
         'version'                    => '0.74',
