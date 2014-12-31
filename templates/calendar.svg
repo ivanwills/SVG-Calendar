@@ -82,7 +82,23 @@
 				[% IF col.text.adjust %]lengthAdjust="[% col.text.adjust %]"[% END %]>
 				[% col.text.text %]
 			</text>[% END %]
-			[% IF col.moon %][% col.moon %][% END %]
+			[% IF col.moon %]
+			<g class="moon" id="extra_[% col.moon.id %]">
+				<circle class="outline"
+				[% FOREACH attrib in col.moon.border %]
+					[% attrib.key %]=[% attrib.value -%]
+				[%- END -%]
+				/>
+				[% IF col.moon.highlight -%]
+				<[% col.moon.highlight.type %]
+					[%- FOREACH attrib in col.moon.highlight %]
+					[%- IF attrib.key == 'type'; NEXT; END -%]
+					[% attrib.key %]=[% attrib.value -%]
+					[%- END -%]
+				/>
+				[%- END -%]
+			</g>
+			[% END %]
 		</g>
 				[%- j=j+1 -%]
 			[% END -%]

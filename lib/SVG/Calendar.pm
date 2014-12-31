@@ -69,14 +69,12 @@ sub init {
     my $self    = shift;
     my %size    = $self->get_page();
     my %temp    = ( page => \%size, xu => $self->{page}{width_unit}, yu => $self->{page}{height_unit}, );
-    my $svg     = SVG->new( -raiseerror => 1, %size, );
     my $height  = $self->{page}{height};
     my $width   = $self->{page}{width};
     my $xu      = $self->{page}{width_unit};
     my $yu      = $self->{page}{height_unit};
     my $xmargin = $self->{page}{margin} || $self->{page}{width} * $MARGIN_RATIO;
     my $ymargin = $self->{page}{margin} || $self->{page}{height} * $MARGIN_RATIO;
-    $self->{svg}               = $svg;
     $self->{page}{x_margin}    = $xmargin;
     $self->{page}{y_margin}    = $ymargin;
     $self->{moon}{xoffset}   ||= 0;
@@ -87,6 +85,7 @@ sub init {
         # assume that the height is a percentage value and divide by 100
         $self->{calendar_height} /= 100;
     }
+    $self->{classes} = {};
 
     # cal bounding box (bb)
     $temp{bb} = {
@@ -280,8 +279,6 @@ sub output_month {
     # add the month specific details to a clone of the general settings
     my $templ = clone $self->{template};
     my %size  = $self->get_page();
-    my $svg   = SVG->new( -raiseerror => 1, %size, );
-    $self->{svg}       = $svg;
     $self->{full_moon} = 0;
 
     carp "Month '$month' is not the correct format (YYYY-MM) " if !$month || $month !~ /\A\d{4}-\d{2}\Z/xms;
@@ -433,14 +430,12 @@ sub moon {
     my $x      = $params{x} || $FULL_MOON;
     my $y      = $params{y} || $FULL_MOON;
     my $r      = $params{r} || $FULL_MOON;
-    my $svg    = $self->{svg};
     my $style  = q//;
 
     # approx error of less than one lunar day
     my $error = 2 * pi / 56;  ## no critic
 
-    # extra testing
-    my $g = $svg->g( id => "extra_$id", class => 'moon', );
+    my $moon = { id => $id };
 
     # moon phases 0 == new moon 3 == last quarter
 
@@ -456,13 +451,14 @@ sub moon {
 
         # approx full moon
         my $colour = $self->{full_moon}++ ? 'blue' : 'black';
-        $g->circle(
+        $moon->{highlight} = {
+            type  => 'circle',
             id    => $id,
             style => "fill: $colour; stroke: none",
             cx    => $x,
             cy    => ( $sy + $ey ) / 2,
             r     => $r,
-        );
+        };
     }
     elsif ( $phase < pi ) {
 
@@ -474,11 +470,12 @@ sub moon {
         $d .= ( $ex - $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $ey + $r / 2 * ( -sin($phase) ) ) . q/,/;
         $d .= ( $ex - $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $sy - $r / 2 * ( -sin($phase) ) );
         $d .= ", $sx\t$sy Z";
-        $g->path(
+        $moon->{highlight} = {
+            type  => 'path',
             id    => $id,
             style => q//,
             d     => $d,
-        );
+        };
     }
     elsif ( $phase > pi ) {
 
@@ -490,23 +487,24 @@ sub moon {
         $d .= ( $ex + $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $ey - $r / 2 * ( -sin($phase) ) ) . q/,/;
         $d .= ( $ex + $r * $MOON_RADIAL_STEP * ( -cos($phase) ) ) . q/ / . ( $sy + $r / 2 * ( -sin($phase) ) );
         $d .= ", $sx\t$sy Z";
-        $g->path(
+        $moon->{highlight} = {
+            type  => 'path',
             id    => $id,
             style => q//,
             d     => $d,
-        );
+        };
     }
 
-    $g->circle(
+    $moon->{border} = {
         id    => "moon_border_$id",
         class => 'outline',
         style => $style,
         cx    => $x,
         cy    => ( $sy + $ey ) / 2,
         r     => $r,
-    );
+    };
 
-    return $g->xmlify();
+    return $moon;
 }
 
 sub get_moon_phase {
