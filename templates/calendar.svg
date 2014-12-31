@@ -85,20 +85,20 @@
 			[% IF col.moon %]
 			<g class="moon" id="extra_[% col.moon.id %]">
 				<circle class="outline"
-				[% FOREACH attrib in col.moon.border %]
-					[% attrib.key %]=[% attrib.value -%]
-				[%- END -%]
+				[%- FOREACH attrib IN col.moon.border %]
+					[% attrib.key %]="[% attrib.value -%]"
+				[%- END %]
 				/>
-				[% IF col.moon.highlight -%]
+				[%- IF col.moon.highlight %]
 				<[% col.moon.highlight.type %]
-					[%- FOREACH attrib in col.moon.highlight %]
-					[%- IF attrib.key == 'type'; NEXT; END -%]
-					[% attrib.key %]=[% attrib.value -%]
-					[%- END -%]
+					[%- FOREACH attrib IN col.moon.highlight %]
+						[%- IF attrib.key == 'type'; NEXT; END %]
+					[% attrib.key %]="[% attrib.value -%]"
+					[%- END %]
 				/>
-				[%- END -%]
+				[%- END %]
 			</g>
-			[% END %]
+			[%- END %]
 		</g>
 				[%- j=j+1 -%]
 			[% END -%]
