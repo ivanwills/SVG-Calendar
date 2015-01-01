@@ -95,7 +95,7 @@
 			</text>[% END %]
 			[% IF col.moon %]
 			<g class="moon" id="extra_[% col.moon.id %]">
-				<circle class="outline"
+				<circle
 				[%- FOREACH attrib IN col.moon.border %]
 					[% attrib.key %]="[% attrib.value -%]"
 				[%- END %]
