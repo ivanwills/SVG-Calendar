@@ -48,6 +48,17 @@
 			g.current_month circle {
 				stroke:       black;
 			}
+			.new-moon {
+				stroke: grey
+			}
+			.full-moon {
+				fill: black;
+				stroke: none;
+			}
+			.blue-moon {
+				fill: blue;
+				stroke: none;
+			}
 		]]>
 		</style>
 	</defs>

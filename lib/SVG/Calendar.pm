@@ -422,7 +422,6 @@ sub output {
 }
 
 sub moon {
-
     my ( $self, %params ) = @_;
 
     my $phase  = $params{phase};
@@ -430,7 +429,7 @@ sub moon {
     my $x      = $params{x} || $FULL_MOON;
     my $y      = $params{y} || $FULL_MOON;
     my $r      = $params{r} || $FULL_MOON;
-    my $style  = q//;
+    my $class  = q//;
 
     # approx error of less than one lunar day
     my $error = 2 * pi / 56;  ## no critic
@@ -443,18 +442,16 @@ sub moon {
     my ( $ex, $ey ) = ( $x, $y + 2 * $r );
 
     if ( $phase < $error || 2 * pi - $error < $phase ) {
-
-        # New moon
-        $style = 'stroke: grey';
+        $class = ' new-moon';
     }
     elsif ( pi - $error < $phase && $phase < pi + $error ) {
 
         # approx full moon
-        my $colour = $self->{full_moon}++ ? 'blue' : 'black';
+        my $moon_type = $self->{full_moon}++ ? 'blue-moon' : 'full-moon';
         $moon->{highlight} = {
             type  => 'circle',
             id    => $id,
-            style => "fill: $colour; stroke: none",
+            class => $moon_type,
             cx    => $x,
             cy    => ( $sy + $ey ) / 2,
             r     => $r,
@@ -495,8 +492,7 @@ sub moon {
 
     $moon->{border} = {
         id    => "moon_border_$id",
-        class => 'outline',
-        ( $style ? (style => $style) : () ),
+        class => "outline$class",
         cx    => $x,
         cy    => ( $sy + $ey ) / 2,
         r     => $r,
