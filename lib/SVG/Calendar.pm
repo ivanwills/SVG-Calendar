@@ -14,7 +14,6 @@ use Scalar::Util qw/blessed/;
 use Data::Dumper qw/Dumper/;
 use Clone qw/clone/;
 use Math::Trig;
-use SVG;
 use DateTime::Format::Strptime qw/strptime strftime/;
 use Template;
 use File::ShareDir qw/dist_dir/;
