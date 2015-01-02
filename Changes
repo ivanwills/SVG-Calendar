@@ -1,5 +1,21 @@
 Revision history for Perl extension SVG::Calendar
 
+0.3.6   2015-01-02
+        Updating for release of version 0.3.6
+        Removed unused module (Ivan Wills)
+        Dates updated (Ivan Wills)
+        Fixed repeating "class" (Ivan Wills)
+        Moved moon inline styling to classes (Ivan Wills)
+        Removed dependency on SVG.pm (Ivan Wills)
+        Cleaned up white space around tags (Ivan Wills)
+        Cleaned up adding empty styles (Ivan Wills)
+        Getting rid of SVG.pm reliance (Ivan Wills)
+        Updated dependencies (Ivan Wills)
+        changed --show-template to use new template (Ivan Wills)
+        Started using the share dir path for templates (Ivan Wills)
+        Moved template to own file (Ivan Wills)
+        Added new TODO file (Ivan Wills)
+
 0.3.5   2014-12-24
         Updating for release of version 0.3.5
         Things to do (Ivan Wills)
@@ -24,7 +40,7 @@ v0.3.2   2014-06-02
     Fixed executable bit (Ivan Wills)
     Adding tag files (Ivan Wills)
     Added configure requires section (Ivan Wills)
-    Added new releases chagne log (Ivan Wills)
+    Added new releases change log (Ivan Wills)
 
 v0.3.1 2012-07-21
     Build updates
