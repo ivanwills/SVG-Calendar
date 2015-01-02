@@ -1,5 +1,9 @@
 Revision history for Perl extension SVG::Calendar
 
+0.3.7   2015-01-02
+        Updating for release of version 0.3.7
+        Fixed MANIFEST files to templates are deployed (Ivan Wills)
+
 0.3.6   2015-01-02
         Updating for release of version 0.3.6
         Removed unused module (Ivan Wills)
