@@ -1,68 +1,25 @@
-
-#!start included /usr/share/perl/5.14/ExtUtils/MANIFEST.SKIP
 # Avoid version control files.
 \bRCS\b
-\bCVS\b/
-\bSCCS\b
+\bCVS\b
 ,v$
 \B\.svn\b
-\B\.git\b
-\B\.gitignore\b
-\b_darcs\b
 \B\.cvsignore$
+\B\.git\b
+\B\.gitignore$
 \B\.bzr\b
 
-# Avoid VMS specific MakeMaker generated files
+# Avoid Makemaker generated and utility files.
+\bMakefile$
+\bblib
+\bMakeMaker-\d
+\bpm_to_blib$
+\bblibdirs$
+^MANIFEST\.SKIP$
+
+# Avoid VMS specific Makemaker generated files
 \bDescrip.MMS$
 \bDESCRIP.MMS$
 \bdescrip.mms$
-
-# Avoid Makemaker generated and utility files.
-\bMANIFEST\.bak
-\bMakefile$
-\bblib/
-\bMakeMaker-\d
-\bpm_to_blib\.ts$
-\bpm_to_blib$
-\bblibdirs\.ts$         # 6.18 through 6.25 generated this
-
-# Avoid Module::Build generated and utility files.
-\bBuild$
-\b_build/
-\bBuild.bat$
-\bBuild.COM$
-\bBUILD.COM$
-\bbuild.com$
-
-# Avoid temp and backup files.
-~$
-\.old$
-\#$
-\b\.#
-\.bak$
-\.tmp$
-\.#
-\.rej$
-
-# Avoid OS-specific files/dirs
-# Mac OSX metadata
-\B\.DS_Store
-# Mac OSX SMB mount metadata files
-\B\._
-
-# Avoid Devel::Cover and Devel::CoverX::Covered files.
-\bcover_db\b
-\bcovered\b
-
-# Avoid Test::Kwalitee files
-Debian_CPANTS.txt
-
-# Avoid MYMETA files
-^MYMETA\.
-#!end included /usr/share/perl/5.14/ExtUtils/MANIFEST.SKIP
-
-# Avoid configuration metadata file
-^MYMETA\.
 
 # Avoid Module::Build generated and utility files.
 \bBuild$
@@ -71,15 +28,38 @@ Debian_CPANTS.txt
 \bBuild.COM$
 \bBUILD.COM$
 \bbuild.com$
-^MANIFEST\.SKIP
 
-# Avoid Devel::NYTProf generated files
-\bnytprof*
+# Avoid Devel::Cover generated files
+\bcover_db
+
+# Avoid temp and backup files.
+~$
+\.tmp$
+\.old$
+\.bak$
+\#$
+\.#
+\.rej$
+
+# Avoid OS-specific files/dirs
+#   Mac OSX metadata
+\B\.DS_Store
+#   Mac OSX SMB mount metadata files
+\B\._
 
 # Avoid vim temporary file and other vim generated files
 .*\.sw[ponxmn]$
 .vimtagsdisplay
 tags
+
+# This generated file
+\bMYMETA.yml$
+
+# Avoid Test::Kwalitee generated files
+Debian_CPANTS.txt
+
+# Avoid Devel::NYTProf generated files
+\bnytprof*
 
 # Avoid archives of this distribution
 \bSVG-Calendar-[\d\.\_]+
@@ -88,10 +68,10 @@ tags
 .prove
 
 # Other files of interest
-\..*\.tag$
 vim.sh
 vrc.yml
 tmp*
-temp*
+temp/*
 errors.err
-[.].*[.]tag
+[.].*[.]tag$
+^MYMETA\.json$

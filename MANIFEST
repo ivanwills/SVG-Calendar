@@ -19,4 +19,5 @@ t/perlcriticrc
 t/pod-coverage.t
 t/pod.t
 t/spelling.t
+templates/calendar.svg
 TODO.md
