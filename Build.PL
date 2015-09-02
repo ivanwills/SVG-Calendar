@@ -42,7 +42,6 @@ my $builder = Module::Build->new(
         ],
     },
     add_to_cleanup     => [ 'SVG-Calendar-*' ],
-    create_makefile_pl => 'traditional',
     create_license     => 1,
     meta_merge         => {
         resources => {
