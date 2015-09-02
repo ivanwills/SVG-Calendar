@@ -1,5 +1,9 @@
 Revision history for Perl extension SVG::Calendar
 
+0.3.9   2015-09-02
+        Updating for release of version 0.3.9
+        Removed creation of makefile (Ivan Wills)
+
 0.3.8   2015-06-24
         Updating for release of version 0.3.8
         Removed unneeded tag (Ivan Wills)
