@@ -577,8 +577,11 @@ This documentation refers to SVG::Calendar version 0.3.9.
    # print to standard out the calendar for June 2006
    print $svg->output_month( '2006-06' );
 
-   # create a calendar for the year 2007
-   $svg->output_year( );
+   # create a calendar for the year 2007 with filenames
+   #   my-calendar-2015-01.svg
+   #   ...
+   #   my-calendar-2015-12.svg
+   $svg->output_year( '2007', 'my-calendar' );
 
 =head1 DESCRIPTION
 
