@@ -16,6 +16,7 @@ use Config::Std;
 use Data::Dumper qw/Dumper/;
 use SVG::Calendar;
 use Path::Tiny;
+use FindBin qw/$Bin/;
 
 our $VERSION = version->new('0.3.10');
 
@@ -141,7 +142,7 @@ sub main {
 sub show_template {
 
     require File::ShareDir;
-    my $dir = path( File::ShareDir::dist_dir('SVG-Calendar') );
+    my $dir = path( eval { File::ShareDir::dist_dir('SVG-Calendar') } || ( $Bin, '..', 'templates' )  );
     print $dir->path('calendar.svg')->slurp;
 
     return exit 0;

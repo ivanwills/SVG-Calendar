@@ -381,7 +381,7 @@ sub output {
 
     my $fh;
     my %option = ( EVAL_PERL => 1 );
-    $option{INCLUDE_PATH} = dist_dir('SVG-Calendar');
+    $option{INCLUDE_PATH} = $self->{INCLUDE_PATH} || dist_dir('SVG-Calendar');
     if ( $self->{path} ) {
         $option{INCLUDE_PATH} .= ':' . $self->{path};
     }

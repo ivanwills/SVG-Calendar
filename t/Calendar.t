@@ -8,7 +8,7 @@ my $module = 'SVG::Calendar';
 
 use_ok($module);
 
-my $cal = SVG::Calendar->new();
+my $cal = SVG::Calendar->new( INCLUDE_PATH => 'templates' );
 
 isa_ok( $cal, $module );
 
