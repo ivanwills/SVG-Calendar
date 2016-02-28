@@ -75,3 +75,6 @@ temp/*
 errors.err
 [.].*[.]tag$
 ^MYMETA\.json$
+.travis.yml
+.editorconfig
+.vtide.yml

@@ -1,0 +1,17 @@
+--- 
+count: 4
+default: 
+  restart: 0
+  wait: 0
+editor: 
+  files: 
+    eg: 
+      - some-file.eg
+name: svg-cal
+terminals: 
+  2: []
+
+  3: []
+
+  4: []
+
