@@ -20,3 +20,4 @@ t/pod.t
 t/spelling.t
 templates/calendar.svg
 TODO.md
+Makefile.PL
