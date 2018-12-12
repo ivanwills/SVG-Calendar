@@ -633,7 +633,7 @@ Return: list - A list of the files created
 Description: Creates the SVG calendar files for each month of the year (or for
 each month from start and end)
 
- eg $svg->output_year( 2006, 'folowers' );
+ eg $svg->output_year( 2006, 'flowers' );
 
  Will result in the following files created
 
